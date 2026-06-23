@@ -172,8 +172,7 @@ python main.py
 | Nome | Papel |
 | :--- | :--- |
 | **Gustavo Souza** | Desenvolvedor / POO e Banco de Dados |
-| **[Nome do integrante 2]** | [Papel] |
-| **[Nome do integrante 3]** | [Papel] |
+| **Marcelo Barros** | Scrum master |
 
 ---
 
