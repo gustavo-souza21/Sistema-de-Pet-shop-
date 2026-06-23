@@ -71,24 +71,6 @@ O sistema adota organização em **pacotes por responsabilidade**, separando cla
 - **Classe abstrata** (`ABC` + `@abstractmethod`): `Servico` define o contrato que toda subclasse deve implementar.
 - **Tratamento de exceções** nas regras de negócio (ex: agendamento duplicado).
 
----
-
-## 📁 Estrutura do Repositório
-
-```
-Sistema-de-Pet-shop/
-├── main.py
-├── models/
-├── repositories/
-├── services/
-├── ui/
-├── database/
-├── sql/
-├── docs/
-│   └── diagramas/
-├── requirements.txt
-├── .env.example
-└── README.md
 ```
 
 | Pasta/Arquivo | Descrição |
