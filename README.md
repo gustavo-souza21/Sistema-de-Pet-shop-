@@ -124,49 +124,6 @@ O banco pode ser criado automaticamente via `database/create_tables.py` ou manua
 
 ---
 
-## ⚙️ Instruções de Execução
-
-**1. Clonar o repositório**
-```bash
-git clone https://github.com/gustavo-souza21/Sistema-de-Pet-shop-.git
-cd Sistema-de-Pet-shop-
-```
-
-**2. Criar e ativar um ambiente virtual** *(opcional, recomendado)*
-```bash
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
-```
-
-**3. Instalar dependências**
-```bash
-pip install -r requirements.txt
-```
-
-**4. Configurar o banco de dados**
-
-Copie `.env.example` para `.env` e preencha com suas credenciais:
-```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=petshop
-DB_USER=seu_usuario
-DB_PASS=sua_senha
-```
-
-**5. Criar as tabelas**
-```bash
-python database/create_tables.py
-```
-
-**6. Executar o sistema**
-```bash
-python main.py
-```
-
----
-
 ## 👥 Equipe do Projeto
 
 | Nome | Papel |
