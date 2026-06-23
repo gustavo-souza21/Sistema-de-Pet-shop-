@@ -73,26 +73,6 @@ O sistema adota organização em **pacotes por responsabilidade**, separando cla
 
 ---
 
-## 🛠️ Tech Stack
-
-### Linguagem & Banco de Dados
-![PYTHON](https://img.shields.io/badge/Python-Linguagem-3776AB?style=flat-square&logo=python&logoColor=white)
-![POSTGRES](https://img.shields.io/badge/PostgreSQL-Banco%20de%20Dados-4169E1?style=flat-square&logo=postgresql&logoColor=white)
-![PSYCOPG2](https://img.shields.io/badge/psycopg2-Driver%20PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white)
-
-### Ferramentas
-![GIT](https://img.shields.io/badge/Git-Controle%20de%20Vers%C3%A3o-F05032?style=flat-square&logo=git&logoColor=white)
-![GITHUB](https://img.shields.io/badge/GitHub-Reposit%C3%B3rio-181717?style=flat-square&logo=github&logoColor=white)
-
-| Camada | Tecnologia | Função |
-| :--- | :--- | :--- |
-| Linguagem | Python 3 | Lógica de negócio e modelagem orientada a objetos |
-| Banco de Dados | PostgreSQL | Persistência relacional dos dados |
-| Driver de Conexão | psycopg2 | Integração entre Python e PostgreSQL |
-| Interface | Terminal (CLI) | Menu textual para interação com o usuário |
-
----
-
 ## 📁 Estrutura do Repositório
 
 ```
