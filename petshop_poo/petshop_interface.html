@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Pet Shop — Ficha de Registros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #EDE6D6;
+    --bg-card: #FBF8F0;
+    --ink: #1F3A3D;
+    --ink-soft: #52686B;
+    --ink-faint: #8A9A9B;
+    --accent: #C97A2B;
+    --accent-soft: #E8C79A;
+    --accent-alt: #6E7D45;
+    --danger: #A83232;
+    --danger-bg: #F6E3DF;
+    --border: #D8CBAE;
+    --tag-bg: #1F3A3D;
+    --tag-text: #E8C79A;
+    --shadow: 0 1px 0 rgba(31,58,61,0.06), 0 8px 24px -12px rgba(31,58,61,0.25);
+    --radius: 10px;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 100% -10%, #F6EFDD 0%, transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app{
+    display:grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar: folder-tab index ---------- */
+  .sidebar{
+    background: var(--ink);
+    color: var(--tag-text);
+    padding: 28px 0;
+    position: relative;
+  }
+  .brand{
+    padding: 0 22px 22px 22px;
+    border-bottom: 1px solid rgba(232,199,154,0.18);
+    margin-bottom: 10px;
+  }
+  .brand .stamp{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width: 40px; height:40px;
+    background: var(--accent);
+    color: var(--ink);
+    border-radius: 8px;
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  .brand h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 19px;
+    line-height:1.25;
+    margin:0 0 4px 0;
+    color:#F4EFE2;
+  }
+  .brand p{
+    margin:0;
+    font-size:12px;
+    color:#9FB3AC;
+    letter-spacing:.02em;
+  }
+
+  .tabs{ list-style:none; margin:0; padding:0; }
+  .tab-btn{
+    width:100%;
+    text-align:left;
+    background:transparent;
+    border:none;
+    color:#C9D6D2;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    font-weight:500;
+    padding:12px 22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    border-left:3px solid transparent;
+    transition: background .15s ease, color .15s ease;
+  }
+  .tab-btn .n{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:#6F8A85;
+    width:18px;
+  }
+  .tab-btn:hover{ background: rgba(232,199,154,0.06); color:#F4EFE2; }
+  .tab-btn.active{
+    background: rgba(232,199,154,0.1);
+    border-left-color: var(--accent);
+    color:#F4EFE2;
+  }
+  .tab-btn.active .n{ color: var(--accent); }
+
+  /* ---------- Main content ---------- */
+  main{ padding: 36px 44px; max-width: 1180px; }
+
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .section-head h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-style: italic;
+    font-size: 30px;
+    margin:0;
+    color: var(--ink);
+  }
+  .section-head .sub{
+    font-size:13px;
+    color: var(--ink-soft);
+    margin-top:4px;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color: var(--accent);
+    margin: 0 0 2px 0;
+    display:block;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+    align-items:start;
+  }
+  @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
+
+  /* ---------- Ficha (form card) ---------- */
+  .ficha{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 22px 22px 20px 22px;
+    position: relative;
+    overflow:hidden;
+  }
+  .ficha::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:5px;
+    background: repeating-linear-gradient(90deg, var(--accent) 0 14px, transparent 14px 22px);
+    opacity:.55;
+  }
+  .ficha h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    margin: 4px 0 16px 0;
+    color: var(--ink);
+  }
+
+  .field{ margin-bottom:14px; }
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color: var(--ink-soft);
+    margin-bottom:5px;
+    letter-spacing:.01em;
+  }
+  .field .hint{
+    font-size:11px;
+    color: var(--ink-faint);
+    margin-top:4px;
+  }
+  input[type=text], input[type=number], input[type=email], input[type=date], input[type=time], select{
+    width:100%;
+    padding:9px 10px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    color: var(--ink);
+    outline:none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  input:focus, select:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(201,122,43,0.15);
+  }
+  input.invalid{
+    border-color: var(--danger);
+    background: #FEFAF9;
+  }
+  input.invalid:focus{
+    box-shadow: 0 0 0 3px rgba(168,50,50,0.15);
+  }
+  .error-msg{
+    display:none;
+    font-size:12.5px;
+    color: var(--danger);
+    background: var(--danger-bg);
+    border: 1px solid #E7C3BB;
+    padding:7px 9px;
+    border-radius:6px;
+    margin-top:6px;
+    font-weight:500;
+  }
+  .error-msg.show{ display:block; }
+
+  .checkline{
+    display:flex; align-items:center; gap:8px;
+    font-size:13px; color:var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .checkline input{ width:auto; }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 16px;
+    border-radius:7px;
+    border:1px solid transparent;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    transition: transform .1s ease, filter .15s ease;
+  }
+  .btn:active{ transform: translateY(1px); }
+  .btn-primary{ background: var(--ink); color:#F4EFE2; }
+  .btn-primary:hover{ filter:brightness(1.15); }
+  .btn-ghost{ background:transparent; border-color:var(--border); color:var(--ink-soft); }
+  .btn-ghost:hover{ background:#F1EAD9; }
+  .btn-row{ display:flex; gap:10px; margin-top:18px; }
+
+  .banner{
+    display:none;
+    margin-top: 14px;
+    padding: 9px 11px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:500;
+  }
+  .banner.ok{ display:block; background:#E9EEDD; color: var(--accent-alt); border:1px solid #CFDAB4; }
+  .banner.err{ display:block; background: var(--danger-bg); color: var(--danger); border:1px solid #E7C3BB; }
+
+  /* ---------- Ledger (table) ---------- */
+  .ledger-wrap{
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .ledger-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 18px 12px 18px;
+    border-bottom:1px solid var(--border);
+  }
+  .ledger-head h4{
+    font-family:'Fraunces', serif;
+    font-size:15px; font-weight:600; margin:0;
+  }
+  .count-chip{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    background: var(--ink);
+    color: var(--tag-text);
+    padding:3px 9px;
+    border-radius:20px;
+  }
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color: var(--ink-faint);
+    padding: 10px 18px;
+    border-bottom:1px solid var(--border);
+    background: #F4EEDD;
+  }
+  tbody td{
+    padding: 12px 18px;
+    font-size:13.5px;
+    border-bottom:1px solid #EEE6D2;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+  tbody tr:last-child td{ border-bottom:none; }
+  tbody tr:hover{ background: #FAF5E9; }
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding:3px 8px;
+    border-radius:5px;
+    display:inline-block;
+  }
+  .pill{
+    font-size:11.5px;
+    font-weight:600;
+    padding:3px 9px;
+    border-radius:20px;
+    display:inline-block;
+  }
+  .pill.agendado{ background:#EFE3C9; color:#8A5A16; }
+  .pill.concluido{ background:#DDE6C9; color: var(--accent-alt); }
+  .pill.cancelado{ background: var(--danger-bg); color: var(--danger); }
+  .row-actions{ display:flex; gap:8px; }
+  .icon-btn{
+    border:1px solid var(--border);
+    background:#fff;
+    border-radius:6px;
+    padding:5px 9px;
+    font-size:12px;
+    cursor:pointer;
+    color: var(--ink-soft);
+  }
+  .icon-btn:hover{ background:#F1EAD9; }
+  .icon-btn.danger:hover{ background: var(--danger-bg); color:var(--danger); border-color:#E7C3BB; }
+  .empty{
+    padding: 34px 18px;
+    text-align:center;
+    color: var(--ink-faint);
+    font-size:13.5px;
+  }
+
+  .muted-small{ font-size:12px; color:var(--ink-faint); }
+
+  /* Venda item list */
+  .item-line{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:8px 0; border-bottom:1px dashed var(--border); font-size:13.5px;
+  }
+  .item-line:last-child{ border-bottom:none; }
+  .total-line{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:12px; margin-top:6px; border-top:2px solid var(--ink);
+    font-family:'Fraunces', serif; font-size:17px; font-weight:600;
+  }
+
+  ::selection{ background: var(--accent-soft); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <nav class="sidebar">
+    <div class="brand">
+      <div class="stamp">P</div>
+      <h1>Sistema de<br>Pet Shop</h1>
+      <p>Fichas &amp; registros — UFAM/ICET</p>
+    </div>
+    <ul class="tabs" id="tabList">
+      <li><button class="tab-btn active" data-tab="clientes"><span class="n">01</span> Clientes</button></li>
+      <li><button class="tab-btn" data-tab="animais"><span class="n">02</span> Animais</button></li>
+      <li><button class="tab-btn" data-tab="servicos"><span class="n">03</span> Serviços</button></li>
+      <li><button class="tab-btn" data-tab="funcionarios"><span class="n">04</span> Funcionários</button></li>
+      <li><button class="tab-btn" data-tab="agendamentos"><span class="n">05</span> Agendamentos</button></li>
+      <li><button class="tab-btn" data-tab="produtos"><span class="n">06</span> Produtos</button></li>
+      <li><button class="tab-btn" data-tab="vendas"><span class="n">07</span> Vendas</button></li>
+    </ul>
+  </nav>
+
+  <main id="mainArea">
+    <!-- rendered by JS -->
+  </main>
+</div>
+
+<script>
+/* =========================================================================
+   MODELS
+   Espelha models/ do projeto Python: classes com encapsulamento (getters
+   simulados por validação central), herança (Pessoa -> Cliente/Funcionario)
+   e polimorfismo (descricaoPapel / subtotal).
+   ========================================================================= */
+
+const StatusAgendamento = ["Agendado", "Concluido", "Cancelado"];
+
+function validarCpf(valor) {
+  // Regra central: SOMENTE dígitos são contados; precisa sobrar
+  // exatamente 11. Nem mais, nem menos. CPF vazio/opcional é permitido.
+  if (valor === null || valor === undefined || valor === "") return { ok: true, limpo: null };
+  const apenasDigitos = String(valor).replace(/\D/g, "");
+  if (apenasDigitos.length !== 11) {
+    return { ok: false, mensagem: "O CPF está incorreto. Ele deve conter exatamente 11 números." };
+  }
+  return { ok: true, limpo: apenasDigitos };
+}
+
+class Pessoa {
+  constructor(nome, cpf) {
+    this.nome = nome;
+    this.cpf = cpf; // já deve vir validado/limpo por validarCpf()
+  }
+  descricaoPapel() { throw new Error("Classe abstrata: implemente descricaoPapel()"); }
+}
+
+class Cliente extends Pessoa {
+  constructor({ id, nome, cpf, endereco, email, fone }) {
+    super(nome, cpf);
+    this.id = id;
+    this.endereco = endereco || null;
+    this.email = email || null;
+    this.fone = fone || null;
+  }
+  descricaoPapel() { return "Cliente"; }
+}
+
+class Funcionario extends Pessoa {
+  constructor({ id, nome, cpf, cargo, crmv, especialidade }) {
+    super(nome, cpf);
+    this.id = id;
+    this.cargo = cargo || null;
+    this.crmv = crmv || null;
+    this.especialidade = especialidade || null;
+  }
+  descricaoPapel() {
+    const papeis = [];
+    if (this.crmv) papeis.push("Veterinário");
+    if (this.especialidade) papeis.push("Tosador");
+    if (papeis.length === 0) papeis.push(this.cargo || "Funcionário");
+    return papeis.join(" / ");
+  }
+}
+
+class Produto {
+  constructor({ id, nome, preco, estoque }) {
+    this.id = id;
+    this.nome = nome;
+    this.preco = Number(preco);
+    this.estoque = Number(estoque);
+  }
+  baixarEstoque(quantidade) {
+    if (quantidade <= 0) throw new Error("Quantidade para baixa deve ser maior que zero.");
+    if (quantidade > this.estoque) {
+      throw new Error(`Estoque insuficiente de '${this.nome}': disponível=${this.estoque}, solicitado=${quantidade}.`);
+    }
+    this.estoque -= quantidade;
+  }
+}
+
+/* Itens de venda: polimorfismo — ambos implementam subtotal()/descricao() */
+class ItemServico {
+  constructor({ tipoServico, quantidade, valorUnitario }) {
+    this.tipoServico = tipoServico;
+    this.quantidade = quantidade;
+    this.valorUnitario = valorUnitario;
+  }
+  subtotal() { return this.quantidade * this.valorUnitario; }
+  descricao() { return `Serviço: ${this.tipoServico}`; }
+}
+class ItemProduto {
+  constructor({ nomeProduto, quantidade, valorUnitario }) {
+    this.nomeProduto = nomeProduto;
+    this.quantidade = quantidade;
+    this.valorUnitario = valorUnitario;
+  }
+  subtotal() { return this.quantidade * this.valorUnitario; }
+  descricao() { return `Produto: ${this.nomeProduto}`; }
+}
+
+/* =========================================================================
+   REPOSITORIES
+   Espelha repositories/: acesso aos "dados" (aqui, window.storage no
+   lugar do PostgreSQL, já que uma página HTML isolada não abre conexão
+   direta com um banco). Cada função aqui é o equivalente do SQL de lá.
+   ========================================================================= */
+
+const Repo = {
+  async _load(chave) {
+    try {
+      const r = await window.storage.get(chave, false);
+      return r ? JSON.parse(r.value) : { proximoId: 1, itens: [] };
+    } catch {
+      return { proximoId: 1, itens: [] };
+    }
+  },
+  async _save(chave, dados) {
+    await window.storage.set(chave, JSON.stringify(dados), false);
+  },
+  async listar(chave) {
+    const dados = await this._load(chave);
+    return dados.itens;
+  },
+  async criar(chave, montarObjeto) {
+    const dados = await this._load(chave);
+    const id = dados.proximoId;
+    const objeto = montarObjeto(id);
+    dados.itens.push(objeto);
+    dados.proximoId += 1;
+    await this._save(chave, dados);
+    return objeto;
+  },
+  async atualizar(chave, id, aplicarMudancas) {
+    const dados = await this._load(chave);
+    const item = dados.itens.find(i => i.id === id);
+    if (!item) return null;
+    aplicarMudancas(item);
+    await this._save(chave, dados);
+    return item;
+  },
+  async remover(chave, id) {
+    const dados = await this._load(chave);
+    const antes = dados.itens.length;
+    dados.itens = dados.itens.filter(i => i.id !== id);
+    await this._save(chave, dados);
+    return dados.itens.length < antes;
+  },
+  async buscar(chave, id) {
+    const dados = await this._load(chave);
+    return dados.itens.find(i => i.id === id) || null;
+  }
+};
+
+/* =========================================================================
+   SERVICES
+   Espelha services/: regras de negócio que usam os repositories acima.
+   ========================================================================= */
+
+const Services = {
+  async cadastrarCliente({ nome, cpf, endereco, email, fone }) {
+    const clientes = await Repo.listar("clientes");
+    if (email) {
+      const duplicado = clientes.some(c => c.email && c.email.toLowerCase() === email.toLowerCase());
+      if (duplicado) throw new Error(`Já existe um cliente cadastrado com o email '${email}'.`);
+    }
+    if (cpf) {
+      const cpfDuplicado = clientes.some(c => c.cpf === cpf);
+      if (cpfDuplicado) throw new Error(`Já existe um cadastro com o CPF '${cpf}'.`);
+    }
+    return Repo.criar("clientes", (id) => new Cliente({ id, nome, cpf, endereco, email, fone }));
+  },
+
+  async cadastrarAnimal({ nome, especie, dataNascimento, idCliente }) {
+    const cliente = await Repo.buscar("clientes", idCliente);
+    if (!cliente) throw new Error("Tutor (cliente) não encontrado. Cadastre o cliente primeiro.");
+    return Repo.criar("animais", (id) => ({ id, nome, especie, dataNascimento, idCliente }));
+  },
+
+  async cadastrarFuncionario({ nome, cpf, cargo, crmv, especialidade }) {
+    const funcionarios = await Repo.listar("funcionarios");
+    if (cpf) {
+      const cpfDuplicado = funcionarios.some(f => f.cpf === cpf);
+      if (cpfDuplicado) throw new Error(`Já existe um cadastro com o CPF '${cpf}'.`);
+    }
+    return Repo.criar("funcionarios", (id) => new Funcionario({ id, nome, cpf, cargo, crmv, especialidade }));
+  },
+
+  async agendar({ data, hora, codAnimal, idFuncionario, idServico }) {
+    const agendamentos = await Repo.listar("agendamentos");
+    const conflito = agendamentos.some(a =>
+      a.idFuncionario === idFuncionario && a.data === data && a.hora === hora && a.status !== "Cancelado"
+    );
+    if (conflito) {
+      throw new Error(`O funcionário já tem um agendamento em ${data} ${hora}.`);
+    }
+    return Repo.criar("agendamentos", (id) => ({
+      id, data, hora, codAnimal, idFuncionario, idServico, status: "Agendado"
+    }));
+  },
+
+  async mudarStatusAgendamento(id, novoStatus) {
+    if (!StatusAgendamento.includes(novoStatus)) {
+      throw new Error(`Status '${novoStatus}' inválido. Use um destes: ${StatusAgendamento.join(", ")}.`);
+    }
+    return Repo.atualizar("agendamentos", id, (item) => { item.status = novoStatus; });
+  },
+
+  async abrirVenda({ idCliente }) {
+    return Repo.criar("vendas", (id) => ({ id, idCliente, itens: [], valor: 0 }));
+  },
+
+  async adicionarProdutoNaVenda({ idVenda, idProduto, quantidade }) {
+    const produtos = await Repo._load("produtos");
+    const produtoData = produtos.itens.find(p => p.id === idProduto);
+    if (!produtoData) throw new Error("Produto não encontrado.");
+    const produto = new Produto(produtoData);
+    produto.baixarEstoque(quantidade); // regra de negócio no objeto
+
+    produtoData.estoque = produto.estoque;
+    await Repo._save("produtos", produtos);
+
+    return Repo.atualizar("vendas", idVenda, (venda) => {
+      const item = new ItemProduto({ nomeProduto: produto.nome, quantidade, valorUnitario: produto.preco });
+      venda.itens.push({ tipo: "produto", ...item });
+      venda.valor = venda.itens.reduce((soma, i) => soma + i.quantidade * i.valorUnitario, 0);
+    });
+  },
+
+  async adicionarServicoNaVenda({ idVenda, idServico, quantidade }) {
+    const servicos = await Repo.listar("servicos");
+    const servico = servicos.find(s => s.id === idServico);
+    if (!servico) throw new Error("Serviço não encontrado.");
+
+    return Repo.atualizar("vendas", idVenda, (venda) => {
+      const item = new ItemServico({ tipoServico: servico.tipoServico, quantidade, valorUnitario: servico.valor });
+      venda.itens.push({ tipo: "servico", ...item });
+      venda.valor = venda.itens.reduce((soma, i) => soma + i.quantidade * i.valorUnitario, 0);
+    });
+  }
+};
+
+/* =========================================================================
+   UI
+   Espelha ui/: renderização das telas (o equivalente do menu de terminal,
+   aqui como abas HTML) e ligação dos formulários com os Services acima.
+   ========================================================================= */
+
+const mainArea = document.getElementById("mainArea");
+let currentTab = "clientes";
+
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentTab = btn.dataset.tab;
+    render();
+  });
+});
+
+function fmtMoeda(v) {
+  return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
+}
+function fmtCpf(cpf) {
+  if (!cpf) return '<span class="muted-small">— não informado —</span>';
+  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+}
+
+async function render() {
+  const renderers = {
+    clientes: renderClientes,
+    animais: renderAnimais,
+    servicos: renderServicos,
+    funcionarios: renderFuncionarios,
+    agendamentos: renderAgendamentos,
+    produtos: renderProdutos,
+    vendas: renderVendas
+  };
+  await renderers[currentTab]();
+}
+
+/* ---------------- CLIENTES ---------------- */
+async function renderClientes() {
+  const clientes = await Repo.listar("clientes");
+
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Ficha 01</span>
+        <h2>Clientes</h2>
+        <div class="sub">Tutores cadastrados no sistema.</div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Novo cliente</h3>
+        <form id="formCliente" novalidate>
+          <div class="field">
+            <label for="c-nome">Nome</label>
+            <input type="text" id="c-nome" required>
+          </div>
+          <div class="field">
+            <label for="c-cpf">CPF</label>
+            <input type="text" id="c-cpf" placeholder="000.000.000-00" maxlength="14">
+            <div class="error-msg" id="c-cpf-erro"></div>
+            <div class="hint">Opcional. Se informado, precisa ter exatamente 11 números.</div>
+          </div>
+          <div class="field">
+            <label for="c-endereco">Endereço</label>
+            <input type="text" id="c-endereco">
+          </div>
+          <div class="field">
+            <label for="c-email">Email</label>
+            <input type="email" id="c-email">
+          </div>
+          <div class="field">
+            <label for="c-fone">Telefone</label>
+            <input type="text" id="c-fone">
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="submit">Cadastrar cliente</button>
+          </div>
+          <div class="banner" id="c-banner"></div>
+        </form>
+      </div>
+
+      <div class="ledger-wrap">
+        <div class="ledger-head">
+          <h4>Clientes cadastrados</h4>
+          <span class="count-chip">${clientes.length}</span>
+        </div>
+        ${clientes.length === 0 ? '<div class="empty">Nenhum cliente cadastrado ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Nome</th><th>CPF</th><th>Email</th><th>Telefone</th><th></th></tr></thead>
+          <tbody>
+            ${clientes.map(c => `
+              <tr>
+                <td><span class="tag">#${c.id}</span></td>
+                <td>${c.nome}</td>
+                <td>${fmtCpf(c.cpf)}</td>
+                <td>${c.email || '<span class="muted-small">—</span>'}</td>
+                <td>${c.fone || '<span class="muted-small">—</span>'}</td>
+                <td class="row-actions">
+                  <button class="icon-btn danger" data-del="${c.id}">Remover</button>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+  `;
+
+  // validação de CPF em tempo real
+  const cpfInput = document.getElementById("c-cpf");
+  const cpfErro = document.getElementById("c-cpf-erro");
+  cpfInput.addEventListener("input", () => {
+    const resultado = validarCpf(cpfInput.value);
+    if (!resultado.ok) {
+      cpfInput.classList.add("invalid");
+      cpfErro.textContent = resultado.mensagem;
+      cpfErro.classList.add("show");
+    } else {
+      cpfInput.classList.remove("invalid");
+      cpfErro.classList.remove("show");
+    }
+  });
+
+  document.getElementById("formCliente").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("c-banner");
+    banner.className = "banner";
+
+    const resultadoCpf = validarCpf(cpfInput.value);
+    if (!resultadoCpf.ok) {
+      cpfInput.classList.add("invalid");
+      cpfErro.textContent = resultadoCpf.mensagem;
+      cpfErro.classList.add("show");
+      banner.classList.add("err");
+      banner.textContent = resultadoCpf.mensagem;
+      return;
+    }
+
+    try {
+      await Services.cadastrarCliente({
+        nome: document.getElementById("c-nome").value.trim(),
+        cpf: resultadoCpf.limpo,
+        endereco: document.getElementById("c-endereco").value.trim(),
+        email: document.getElementById("c-email").value.trim(),
+        fone: document.getElementById("c-fone").value.trim()
+      });
+      banner.classList.add("ok");
+      banner.textContent = "Cliente cadastrado com sucesso.";
+      setTimeout(render, 500);
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = Number(btn.dataset.del);
+      const usadoPorAnimal = (await Repo.listar("animais")).some(a => a.idCliente === id);
+      if (usadoPorAnimal) {
+        alert("Não é possível remover: este cliente tem animal(is) vinculado(s).");
+        return;
+      }
+      await Repo.remover("clientes", id);
+      render();
+    });
+  });
+}
+
+/* ---------------- ANIMAIS ---------------- */
+async function renderAnimais() {
+  const [animais, clientes] = [await Repo.listar("animais"), await Repo.listar("clientes")];
+  const nomeCliente = (id) => (clientes.find(c => c.id === id) || {}).nome || "—";
+
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Ficha 02</span>
+        <h2>Animais</h2>
+        <div class="sub">Pacientes vinculados a um tutor já cadastrado.</div>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Novo animal</h3>
+        ${clientes.length === 0 ? '<div class="banner err" style="display:block">Cadastre um cliente antes de adicionar um animal.</div>' : `
+        <form id="formAnimal" novalidate>
+          <div class="field">
+            <label for="a-nome">Nome do animal</label>
+            <input type="text" id="a-nome" required>
+          </div>
+          <div class="field">
+            <label for="a-cliente">Tutor</label>
+            <select id="a-cliente">
+              ${clientes.map(c => `<option value="${c.id}">#${c.id} — ${c.nome}</option>`).join("")}
+            </select>
+          </div>
+          <div class="field">
+            <label for="a-especie">Espécie</label>
+            <input type="text" id="a-especie" placeholder="Cão, gato...">
+          </div>
+          <div class="field">
+            <label for="a-nasc">Data de nascimento</label>
+            <input type="date" id="a-nasc">
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" type="submit">Cadastrar animal</button></div>
+          <div class="banner" id="a-banner"></div>
+        </form>`}
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-head"><h4>Animais cadastrados</h4><span class="count-chip">${animais.length}</span></div>
+        ${animais.length === 0 ? '<div class="empty">Nenhum animal cadastrado ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Nome</th><th>Espécie</th><th>Tutor</th><th></th></tr></thead>
+          <tbody>
+            ${animais.map(a => `
+              <tr>
+                <td><span class="tag">#${a.id}</span></td>
+                <td>${a.nome}</td>
+                <td>${a.especie || '<span class="muted-small">—</span>'}</td>
+                <td>${nomeCliente(a.idCliente)}</td>
+                <td class="row-actions"><button class="icon-btn danger" data-del="${a.id}">Remover</button></td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+  `;
+
+  const form = document.getElementById("formAnimal");
+  if (form) form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("a-banner");
+    banner.className = "banner";
+    try {
+      await Services.cadastrarAnimal({
+        nome: document.getElementById("a-nome").value.trim(),
+        especie: document.getElementById("a-especie").value.trim(),
+        dataNascimento: document.getElementById("a-nasc").value,
+        idCliente: Number(document.getElementById("a-cliente").value)
+      });
+      banner.classList.add("ok");
+      banner.textContent = "Animal cadastrado com sucesso.";
+      setTimeout(render, 500);
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      await Repo.remover("animais", Number(btn.dataset.del));
+      render();
+    });
+  });
+}
+
+/* ---------------- SERVIÇOS ---------------- */
+async function renderServicos() {
+  const servicos = await Repo.listar("servicos");
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div><span class="eyebrow">Ficha 03</span><h2>Serviços</h2><div class="sub">Banho, tosa, consultas e afins.</div></div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Novo serviço</h3>
+        <form id="formServico" novalidate>
+          <div class="field"><label for="s-tipo">Tipo de serviço</label><input type="text" id="s-tipo" required></div>
+          <div class="field"><label for="s-valor">Valor (R$)</label><input type="number" step="0.01" min="0" id="s-valor" required></div>
+          <div class="btn-row"><button class="btn btn-primary" type="submit">Cadastrar serviço</button></div>
+          <div class="banner" id="s-banner"></div>
+        </form>
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-head"><h4>Serviços oferecidos</h4><span class="count-chip">${servicos.length}</span></div>
+        ${servicos.length === 0 ? '<div class="empty">Nenhum serviço cadastrado ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Tipo</th><th>Valor</th><th></th></tr></thead>
+          <tbody>
+            ${servicos.map(s => `
+              <tr>
+                <td><span class="tag">#${s.id}</span></td>
+                <td>${s.tipoServico}</td>
+                <td>${fmtMoeda(s.valor)}</td>
+                <td class="row-actions"><button class="icon-btn danger" data-del="${s.id}">Remover</button></td>
+              </tr>`).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+  `;
+
+  document.getElementById("formServico").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("s-banner");
+    banner.className = "banner";
+    try {
+      const valor = Number(document.getElementById("s-valor").value);
+      if (valor < 0) throw new Error("Valor do serviço não pode ser negativo.");
+      await Repo.criar("servicos", (id) => ({ id, tipoServico: document.getElementById("s-tipo").value.trim(), valor }));
+      banner.classList.add("ok");
+      banner.textContent = "Serviço cadastrado com sucesso.";
+      setTimeout(render, 500);
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => { await Repo.remover("servicos", Number(btn.dataset.del)); render(); });
+  });
+}
+
+/* ---------------- FUNCIONÁRIOS ---------------- */
+async function renderFuncionarios() {
+  const funcionarios = await Repo.listar("funcionarios");
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div><span class="eyebrow">Ficha 04</span><h2>Funcionários</h2><div class="sub">Equipe do pet shop — pode acumular veterinário e/ou tosador.</div></div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Novo funcionário</h3>
+        <form id="formFuncionario" novalidate>
+          <div class="field"><label for="f-nome">Nome</label><input type="text" id="f-nome" required></div>
+          <div class="field">
+            <label for="f-cpf">CPF</label>
+            <input type="text" id="f-cpf" placeholder="000.000.000-00" maxlength="14">
+            <div class="error-msg" id="f-cpf-erro"></div>
+            <div class="hint">Opcional. Se informado, precisa ter exatamente 11 números.</div>
+          </div>
+          <div class="field"><label for="f-cargo">Cargo</label><input type="text" id="f-cargo" placeholder="Atendente, gerente..."></div>
+          <div class="checkline"><input type="checkbox" id="f-eh-vet"><label for="f-eh-vet">É veterinário</label></div>
+          <div class="field" id="campo-crmv" style="display:none"><label for="f-crmv">CRMV</label><input type="text" id="f-crmv"></div>
+          <div class="checkline"><input type="checkbox" id="f-eh-tosador"><label for="f-eh-tosador">É tosador</label></div>
+          <div class="field" id="campo-especialidade" style="display:none"><label for="f-especialidade">Especialidade</label><input type="text" id="f-especialidade"></div>
+          <div class="btn-row"><button class="btn btn-primary" type="submit">Cadastrar funcionário</button></div>
+          <div class="banner" id="f-banner"></div>
+        </form>
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-head"><h4>Equipe cadastrada</h4><span class="count-chip">${funcionarios.length}</span></div>
+        ${funcionarios.length === 0 ? '<div class="empty">Nenhum funcionário cadastrado ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Nome</th><th>CPF</th><th>Papel</th><th></th></tr></thead>
+          <tbody>
+            ${funcionarios.map(f => {
+              const inst = new Funcionario(f);
+              return `
+              <tr>
+                <td><span class="tag">#${f.id}</span></td>
+                <td>${f.nome}</td>
+                <td>${fmtCpf(f.cpf)}</td>
+                <td>${inst.descricaoPapel()}</td>
+                <td class="row-actions"><button class="icon-btn danger" data-del="${f.id}">Remover</button></td>
+              </tr>`;
+            }).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+  `;
+
+  const cpfInput = document.getElementById("f-cpf");
+  const cpfErro = document.getElementById("f-cpf-erro");
+  cpfInput.addEventListener("input", () => {
+    const resultado = validarCpf(cpfInput.value);
+    if (!resultado.ok) {
+      cpfInput.classList.add("invalid"); cpfErro.textContent = resultado.mensagem; cpfErro.classList.add("show");
+    } else {
+      cpfInput.classList.remove("invalid"); cpfErro.classList.remove("show");
+    }
+  });
+
+  document.getElementById("f-eh-vet").addEventListener("change", (e) => {
+    document.getElementById("campo-crmv").style.display = e.target.checked ? "block" : "none";
+  });
+  document.getElementById("f-eh-tosador").addEventListener("change", (e) => {
+    document.getElementById("campo-especialidade").style.display = e.target.checked ? "block" : "none";
+  });
+
+  document.getElementById("formFuncionario").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("f-banner");
+    banner.className = "banner";
+
+    const resultadoCpf = validarCpf(cpfInput.value);
+    if (!resultadoCpf.ok) {
+      cpfInput.classList.add("invalid"); cpfErro.textContent = resultadoCpf.mensagem; cpfErro.classList.add("show");
+      banner.classList.add("err"); banner.textContent = resultadoCpf.mensagem;
+      return;
+    }
+
+    try {
+      await Services.cadastrarFuncionario({
+        nome: document.getElementById("f-nome").value.trim(),
+        cpf: resultadoCpf.limpo,
+        cargo: document.getElementById("f-cargo").value.trim(),
+        crmv: document.getElementById("f-eh-vet").checked ? document.getElementById("f-crmv").value.trim() : null,
+        especialidade: document.getElementById("f-eh-tosador").checked ? document.getElementById("f-especialidade").value.trim() : null
+      });
+      banner.classList.add("ok");
+      banner.textContent = "Funcionário cadastrado com sucesso.";
+      setTimeout(render, 500);
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => { await Repo.remover("funcionarios", Number(btn.dataset.del)); render(); });
+  });
+}
+
+/* ---------------- AGENDAMENTOS ---------------- */
+async function renderAgendamentos() {
+  const [agendamentos, animais, funcionarios, servicos] = [
+    await Repo.listar("agendamentos"), await Repo.listar("animais"),
+    await Repo.listar("funcionarios"), await Repo.listar("servicos")
+  ];
+  const nomeAnimal = (id) => (animais.find(a => a.id === id) || {}).nome || "—";
+  const nomeFuncionario = (id) => (funcionarios.find(f => f.id === id) || {}).nome || "—";
+  const tipoServico = (id) => (servicos.find(s => s.id === id) || {}).tipoServico || "—";
+  const podeAgendar = animais.length && funcionarios.length && servicos.length;
+
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div><span class="eyebrow">Ficha 05</span><h2>Agendamentos</h2><div class="sub">Um funcionário não pode ter dois agendamentos no mesmo horário.</div></div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Novo agendamento</h3>
+        ${!podeAgendar ? '<div class="banner err" style="display:block">Cadastre ao menos 1 animal, 1 funcionário e 1 serviço antes.</div>' : `
+        <form id="formAgendamento" novalidate>
+          <div class="field"><label for="ag-data">Data</label><input type="date" id="ag-data" required></div>
+          <div class="field"><label for="ag-hora">Hora</label><input type="time" id="ag-hora" required></div>
+          <div class="field"><label for="ag-animal">Animal</label>
+            <select id="ag-animal">${animais.map(a => `<option value="${a.id}">#${a.id} — ${a.nome}</option>`).join("")}</select>
+          </div>
+          <div class="field"><label for="ag-func">Funcionário</label>
+            <select id="ag-func">${funcionarios.map(f => `<option value="${f.id}">#${f.id} — ${f.nome}</option>`).join("")}</select>
+          </div>
+          <div class="field"><label for="ag-servico">Serviço</label>
+            <select id="ag-servico">${servicos.map(s => `<option value="${s.id}">#${s.id} — ${s.tipoServico}</option>`).join("")}</select>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" type="submit">Criar agendamento</button></div>
+          <div class="banner" id="ag-banner"></div>
+        </form>`}
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-head"><h4>Agendamentos</h4><span class="count-chip">${agendamentos.length}</span></div>
+        ${agendamentos.length === 0 ? '<div class="empty">Nenhum agendamento criado ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Data/Hora</th><th>Animal</th><th>Funcionário</th><th>Serviço</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            ${agendamentos.map(a => `
+              <tr>
+                <td><span class="tag">#${a.id}</span></td>
+                <td>${a.data} ${a.hora}</td>
+                <td>${nomeAnimal(a.codAnimal)}</td>
+                <td>${nomeFuncionario(a.idFuncionario)}</td>
+                <td>${tipoServico(a.idServico)}</td>
+                <td>
+                  <select data-status="${a.id}" class="pill-select">
+                    ${StatusAgendamento.map(st => `<option value="${st}" ${st === a.status ? "selected" : ""}>${st}</option>`).join("")}
+                  </select>
+                </td>
+                <td class="row-actions"><button class="icon-btn danger" data-del="${a.id}">Remover</button></td>
+              </tr>`).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+  `;
+
+  const form = document.getElementById("formAgendamento");
+  if (form) form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("ag-banner");
+    banner.className = "banner";
+    try {
+      await Services.agendar({
+        data: document.getElementById("ag-data").value,
+        hora: document.getElementById("ag-hora").value,
+        codAnimal: Number(document.getElementById("ag-animal").value),
+        idFuncionario: Number(document.getElementById("ag-func").value),
+        idServico: Number(document.getElementById("ag-servico").value)
+      });
+      banner.classList.add("ok");
+      banner.textContent = "Agendamento criado com sucesso.";
+      setTimeout(render, 500);
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  mainArea.querySelectorAll("[data-status]").forEach(sel => {
+    sel.addEventListener("change", async () => {
+      try {
+        await Services.mudarStatusAgendamento(Number(sel.dataset.status), sel.value);
+        render();
+      } catch (err) {
+        alert(err.message);
+        render();
+      }
+    });
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => { await Repo.remover("agendamentos", Number(btn.dataset.del)); render(); });
+  });
+}
+
+/* ---------------- PRODUTOS ---------------- */
+async function renderProdutos() {
+  const produtos = await Repo.listar("produtos");
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div><span class="eyebrow">Ficha 06</span><h2>Produtos</h2><div class="sub">Estoque nunca fica negativo — a regra vive no próprio objeto Produto.</div></div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Novo produto</h3>
+        <form id="formProduto" novalidate>
+          <div class="field"><label for="p-nome">Nome</label><input type="text" id="p-nome" required></div>
+          <div class="field"><label for="p-preco">Preço (R$)</label><input type="number" step="0.01" min="0" id="p-preco" required></div>
+          <div class="field"><label for="p-estoque">Estoque inicial</label><input type="number" min="0" id="p-estoque" value="0"></div>
+          <div class="btn-row"><button class="btn btn-primary" type="submit">Cadastrar produto</button></div>
+          <div class="banner" id="p-banner"></div>
+        </form>
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-head"><h4>Produtos em estoque</h4><span class="count-chip">${produtos.length}</span></div>
+        ${produtos.length === 0 ? '<div class="empty">Nenhum produto cadastrado ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Nome</th><th>Preço</th><th>Estoque</th><th>Baixa manual</th><th></th></tr></thead>
+          <tbody>
+            ${produtos.map(p => `
+              <tr>
+                <td><span class="tag">#${p.id}</span></td>
+                <td>${p.nome}</td>
+                <td>${fmtMoeda(p.preco)}</td>
+                <td>${p.estoque}</td>
+                <td class="row-actions">
+                  <input type="number" min="1" style="width:70px" id="baixa-${p.id}" placeholder="qtd.">
+                  <button class="icon-btn" data-baixa="${p.id}">Dar baixa</button>
+                </td>
+                <td class="row-actions"><button class="icon-btn danger" data-del="${p.id}">Remover</button></td>
+              </tr>`).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+  `;
+
+  document.getElementById("formProduto").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("p-banner");
+    banner.className = "banner";
+    try {
+      const preco = Number(document.getElementById("p-preco").value);
+      if (preco < 0) throw new Error("Preço não pode ser negativo.");
+      await Repo.criar("produtos", (id) => ({
+        id, nome: document.getElementById("p-nome").value.trim(), preco,
+        estoque: Number(document.getElementById("p-estoque").value || 0)
+      }));
+      banner.classList.add("ok");
+      banner.textContent = "Produto cadastrado com sucesso.";
+      setTimeout(render, 500);
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  mainArea.querySelectorAll("[data-baixa]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const id = Number(btn.dataset.baixa);
+      const qtdInput = document.getElementById(`baixa-${id}`);
+      const quantidade = Number(qtdInput.value);
+      if (!quantidade || quantidade <= 0) { alert("Informe uma quantidade válida."); return; }
+      try {
+        const dados = await Repo._load("produtos");
+        const registro = dados.itens.find(p => p.id === id);
+        const produto = new Produto(registro);
+        produto.baixarEstoque(quantidade);
+        registro.estoque = produto.estoque;
+        await Repo._save("produtos", dados);
+        render();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => { await Repo.remover("produtos", Number(btn.dataset.del)); render(); });
+  });
+}
+
+/* ---------------- VENDAS ---------------- */
+async function renderVendas() {
+  const [vendas, clientes, produtos, servicos] = [
+    await Repo.listar("vendas"), await Repo.listar("clientes"),
+    await Repo.listar("produtos"), await Repo.listar("servicos")
+  ];
+  const nomeCliente = (id) => (clientes.find(c => c.id === id) || {}).nome || "Venda avulsa";
+
+  mainArea.innerHTML = `
+    <div class="section-head">
+      <div><span class="eyebrow">Ficha 07</span><h2>Vendas</h2><div class="sub">Itens de serviço e produto convivem na mesma venda — subtotal calculado de forma polimórfica.</div></div>
+    </div>
+    <div class="grid">
+      <div class="ficha">
+        <h3>Abrir nova venda</h3>
+        <form id="formVenda" novalidate>
+          <div class="field">
+            <label for="v-cliente">Cliente (opcional)</label>
+            <select id="v-cliente">
+              <option value="">— venda avulsa —</option>
+              ${clientes.map(c => `<option value="${c.id}">#${c.id} — ${c.nome}</option>`).join("")}
+            </select>
+          </div>
+          <div class="btn-row"><button class="btn btn-primary" type="submit">Abrir venda</button></div>
+          <div class="banner" id="v-banner"></div>
+        </form>
+      </div>
+      <div class="ledger-wrap">
+        <div class="ledger-head"><h4>Vendas registradas</h4><span class="count-chip">${vendas.length}</span></div>
+        ${vendas.length === 0 ? '<div class="empty">Nenhuma venda registrada ainda.</div>' : `
+        <table>
+          <thead><tr><th>Cód.</th><th>Cliente</th><th>Itens</th><th>Total</th><th></th></tr></thead>
+          <tbody>
+            ${vendas.map(v => `
+              <tr>
+                <td><span class="tag">#${v.id}</span></td>
+                <td>${nomeCliente(v.idCliente)}</td>
+                <td>${v.itens.length}</td>
+                <td>${fmtMoeda(v.valor)}</td>
+                <td class="row-actions">
+                  <button class="icon-btn" data-detalhar="${v.id}">Adicionar item / detalhar</button>
+                  <button class="icon-btn danger" data-del="${v.id}">Remover</button>
+                </td>
+              </tr>`).join("")}
+          </tbody>
+        </table>`}
+      </div>
+    </div>
+    <div id="detalheVenda"></div>
+  `;
+
+  document.getElementById("formVenda").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const banner = document.getElementById("v-banner");
+    banner.className = "banner";
+    const idClienteStr = document.getElementById("v-cliente").value;
+    await Services.abrirVenda({ idCliente: idClienteStr ? Number(idClienteStr) : null });
+    banner.classList.add("ok");
+    banner.textContent = "Venda aberta com sucesso.";
+    setTimeout(render, 500);
+  });
+
+  mainArea.querySelectorAll("[data-del]").forEach(btn => {
+    btn.addEventListener("click", async () => { await Repo.remover("vendas", Number(btn.dataset.del)); render(); });
+  });
+
+  mainArea.querySelectorAll("[data-detalhar]").forEach(btn => {
+    btn.addEventListener("click", () => renderDetalheVenda(Number(btn.dataset.detalhar), produtos, servicos, vendas));
+  });
+}
+
+function renderDetalheVenda(idVenda, produtos, servicos, vendas) {
+  const venda = vendas.find(v => v.id === idVenda);
+  const painel = document.getElementById("detalheVenda");
+
+  painel.innerHTML = `
+    <div class="ficha" style="margin-top:22px">
+      <h3>Venda #${idVenda} — itens</h3>
+      <div style="margin-bottom:16px">
+        ${venda.itens.length === 0 ? '<div class="muted-small">Nenhum item ainda.</div>' :
+          venda.itens.map(i => `<div class="item-line"><span>${i.tipo === "produto" ? "Produto" : "Serviço"}: ${i.nomeProduto || i.tipoServico} ×${i.quantidade}</span><span>${fmtMoeda(i.quantidade * i.valorUnitario)}</span></div>`).join("")}
+        <div class="total-line"><span>Total</span><span>${fmtMoeda(venda.valor)}</span></div>
+      </div>
+
+      <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px">
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-soft)">Adicionar produto</label>
+          <select id="dv-produto" style="margin:6px 0">
+            ${produtos.map(p => `<option value="${p.id}">#${p.id} — ${p.nome} (estoque: ${p.estoque})</option>`).join("")}
+          </select>
+          <input type="number" min="1" id="dv-qtd-produto" placeholder="quantidade" style="margin-bottom:8px">
+          <button class="btn btn-ghost" id="btnAddProduto" type="button">+ Adicionar produto</button>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:600;color:var(--ink-soft)">Adicionar serviço</label>
+          <select id="dv-servico" style="margin:6px 0">
+            ${servicos.map(s => `<option value="${s.id}">#${s.id} — ${s.tipoServico} (${fmtMoeda(s.valor)})</option>`).join("")}
+          </select>
+          <input type="number" min="1" id="dv-qtd-servico" value="1" style="margin-bottom:8px">
+          <button class="btn btn-ghost" id="btnAddServico" type="button">+ Adicionar serviço</button>
+        </div>
+      </div>
+      <div class="banner" id="dv-banner"></div>
+    </div>
+  `;
+
+  document.getElementById("btnAddProduto").addEventListener("click", async () => {
+    const banner = document.getElementById("dv-banner");
+    banner.className = "banner";
+    try {
+      await Services.adicionarProdutoNaVenda({
+        idVenda,
+        idProduto: Number(document.getElementById("dv-produto").value),
+        quantidade: Number(document.getElementById("dv-qtd-produto").value)
+      });
+      render();
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+
+  document.getElementById("btnAddServico").addEventListener("click", async () => {
+    const banner = document.getElementById("dv-banner");
+    banner.className = "banner";
+    try {
+      await Services.adicionarServicoNaVenda({
+        idVenda,
+        idServico: Number(document.getElementById("dv-servico").value),
+        quantidade: Number(document.getElementById("dv-qtd-servico").value || 1)
+      });
+      render();
+    } catch (err) {
+      banner.classList.add("err");
+      banner.textContent = err.message;
+    }
+  });
+}
+
+render();
+</script>
+</body>
+</html>
