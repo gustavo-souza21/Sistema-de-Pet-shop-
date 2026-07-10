@@ -1,9 +1,3 @@
-"""
-database/connection.py
-Responsavel apenas por abrir e fechar conexoes com o PostgreSQL.
-Nenhuma logica de negocio aqui -- so conexao.
-"""
-
 import psycopg2
 import psycopg2.extras
 
