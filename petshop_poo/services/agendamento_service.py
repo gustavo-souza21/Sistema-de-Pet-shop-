@@ -1,12 +1,3 @@
-"""
-services/agendamento_service.py
-Regras de negocio da entidade Agendamento. A regra central aqui e:
-um funcionario nao pode ter dois agendamentos ativos na mesma data e
-hora -- essa validacao usa os proprios objetos Agendamento (comparando
-o atributo .hora de cada um), o que caracteriza uma regra de negocio
-orientada a objetos, como pede o edital.
-"""
-
 from models.agendamento import Agendamento
 from models.excecoes import AgendamentoNaoEncontradoError, HorarioIndisponivelError
 from repositories.agendamento_repository import AgendamentoRepository
