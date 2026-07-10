@@ -6,7 +6,6 @@ from repositories.base_repository import RepositorioBase
 
 
 class VendaRepository(RepositorioBase):
-    # -- Venda ------------------------------------------------------------------
     def criar(self, venda: Venda) -> Venda:
         """Cria uma venda vazia (Valor comeca em 0, conforme DEFAULT do banco)."""
         sql = """
@@ -88,7 +87,6 @@ class VendaRepository(RepositorioBase):
         return venda
 
     def atualizar(self, id_venda, **campos):
-        # Venda nao tem campos livres para editar diretamente (Valor e da trigger).
         return self.buscar_por_id(id_venda)
 
     def deletar(self, id_venda):
@@ -107,7 +105,6 @@ class VendaRepository(RepositorioBase):
         finally:
             conn.close()
 
-    # -- Item_venda (baixa de servico) -------------------------------------------
     def adicionar_item_servico(self, id_venda, id_agendamento, valor_unitario, quantidade=1):
         sql = """
             INSERT INTO Item_venda (Id_venda, Id_agendamento, Quantidade, Valor_unitario)
@@ -142,7 +139,6 @@ class VendaRepository(RepositorioBase):
         finally:
             conn.close()
 
-    # -- Intem_Produto (produto vendido) -----------------------------------------
     def adicionar_item_produto(self, id_venda, id_produto, valor_unitario, quantidade=1):
         sql = """
             INSERT INTO Intem_Produto (Id_venda, Id_produto, Quantidade, Valor_unitario)
