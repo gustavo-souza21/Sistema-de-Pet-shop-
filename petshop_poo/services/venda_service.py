@@ -1,12 +1,3 @@
-"""
-services/venda_service.py
-Regras de negocio da entidade Venda. O ponto principal aqui e
-adicionar_produto_a_venda(): usa o metodo Produto.baixar_estoque()
-(regra de negocio orientada a objetos definida no proprio model) antes
-de registrar o item de venda -- se o estoque nao for suficiente, a
-excecao e levantada e a venda nao chega a ser alterada no banco.
-"""
-
 from models.venda import Venda
 from models.excecoes import ProdutoNaoEncontradoError, VendaNaoEncontradaError
 from repositories.venda_repository import VendaRepository
