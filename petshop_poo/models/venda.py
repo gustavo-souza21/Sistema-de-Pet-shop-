@@ -74,7 +74,7 @@ class Venda:
         self.data = data
         self.cod = cod
         self.nome_cliente = nome_cliente
-        self.itens = []  # lista mista de ItemServico / ItemProduto
+        self.itens = [] 
 
     def adicionar_item(self, item: ItemBase):
         self.itens.append(item)
