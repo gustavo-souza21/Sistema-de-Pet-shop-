@@ -1,12 +1,3 @@
-"""
-models/pessoa.py
-Classe abstrata que representa qualquer pessoa cadastrada no sistema
-(hoje: Cliente e Funcionario). Define o "contrato" comum: toda Pessoa
-tem nome valido e sabe descrever qual e o seu papel no sistema --
-cada subclasse implementa 'descricao_papel' do seu proprio jeito
-(isso e o polimorfismo usado em __str__).
-"""
-
 from abc import ABC, abstractmethod
 
 from models.excecoes import CpfInvalidoError
