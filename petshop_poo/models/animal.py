@@ -5,7 +5,7 @@ class Animal:
         self.especie = especie
         self.data_nascimento = data_nascimento
         self.id_cliente = id_cliente
-        self.nome_tutor = nome_tutor  # preenchido so quando vem de uma consulta com JOIN
+        self.nome_tutor = nome_tutor 
 
     def __str__(self):
         tutor = f", tutor: {self.nome_tutor}" if self.nome_tutor else ""
