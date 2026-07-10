@@ -1,19 +1,3 @@
-"""
-models/venda.py
-Classe de dominio Venda, mais os itens que a compoem: ItemServico e
-ItemProduto. Ambos herdam de ItemBase (classe abstrata) e implementam
-'subtotal()' -- Venda.calcular_total() chama item.subtotal() sem saber
-(nem precisar saber) se cada item e um servico ou um produto. Isso e
-o polimorfismo em acao.
-
-IMPORTANTE: Venda.valor (persistido) e calculado por uma TRIGGER no
-PostgreSQL (fn_recalcula_valor_venda) toda vez que um item e inserido/
-atualizado/removido em Item_venda ou Intem_Produto. O metodo
-calcular_total() abaixo e um calculo em memoria (util para conferencia
-e para a UI antes de persistir), mas nunca deve ser escrito direto no
-campo Valor do banco -- a trigger sempre tem a palavra final.
-"""
-
 from abc import ABC, abstractmethod
 
 
