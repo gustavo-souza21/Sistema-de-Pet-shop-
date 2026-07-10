@@ -1,10 +1,3 @@
-"""
-models/animal.py
-Classe de dominio Animal. Nao herda de Pessoa (um animal nao e uma
-pessoa), mas se relaciona com Cliente atraves de id_cliente (o tutor).
-"""
-
-
 class Animal:
     def __init__(self, nome, id_cliente, especie=None, data_nascimento=None, cod=None, nome_tutor=None):
         self.cod = cod
