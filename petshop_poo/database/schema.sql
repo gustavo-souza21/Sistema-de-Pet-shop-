@@ -7,11 +7,6 @@ CREATE TABLE Cliente (
     Fone        VARCHAR(20)
 );
 
--- -----------------------------------------------------------------------------
--- ANIMAL
--- Id_cliente e obrigatorio (todo animal tem um tutor) e usa RESTRICT:
--- nao deixa apagar um cliente que ainda tenha animal cadastrado.
--- -----------------------------------------------------------------------------
 CREATE TABLE Animal (
     Cod_animal      SERIAL PRIMARY KEY,
     Nome            VARCHAR(120) NOT NULL,
