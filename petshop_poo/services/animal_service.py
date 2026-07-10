@@ -10,7 +10,6 @@ class AnimalService:
         self.cliente_repositorio = cliente_repositorio or ClienteRepository()
 
     def cadastrar(self, nome, id_cliente, especie=None, data_nascimento=None) -> Animal:
-        # regra de negocio: o tutor precisa existir antes de cadastrar o animal
         if self.cliente_repositorio.buscar_por_id(id_cliente) is None:
             raise ClienteNaoEncontradoError(id_cliente)
 
