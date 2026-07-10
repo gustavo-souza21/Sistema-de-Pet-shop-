@@ -5,9 +5,8 @@ Trabalho Pratico da disciplina de Engenharia de Software / POO -- UFAM/ICET
 
 ## Integrantes do grupo
 
-- (preencher)
-- (preencher)
-- (preencher)
+- Gustavi Pinheiro de Souza
+- Marcelo Barros da Silva
 
 ## Descricao do sistema
 
