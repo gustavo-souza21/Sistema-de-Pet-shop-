@@ -31,9 +31,8 @@ class AgendamentoService:
         return agendamento
 
     def mudar_status(self, id_agendamento, novo_status) -> Agendamento:
-        # instancia um Agendamento so para reaproveitar a validacao do setter de status
         agendamento_atual = self.buscar(id_agendamento)
-        agendamento_atual.status = novo_status  # valida contra STATUS_PERMITIDOS
+        agendamento_atual.status = novo_status
 
         atualizado = self.repositorio.atualizar(id_agendamento, status=agendamento_atual.status)
         if atualizado is None:
