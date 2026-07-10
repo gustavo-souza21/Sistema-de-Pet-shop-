@@ -17,16 +17,11 @@ class VendaService:
         return self.repositorio.adicionar_item_servico(id_venda, id_agendamento, valor_unitario, quantidade)
 
     def adicionar_produto(self, id_venda, id_produto, quantidade=1):
-        """
-        Registra a venda de um produto E da baixa no estoque, tratando as
-        duas operacoes como uma coisa so: se o estoque nao for suficiente,
-        nada e gravado no banco.
-        """
         produto = self.produto_repositorio.buscar_por_id(id_produto)
         if produto is None:
             raise ProdutoNaoEncontradoError(id_produto)
 
-        produto.baixar_estoque(quantidade)  # levanta EstoqueInsuficienteError se necessario
+        produto.baixar_estoque(quantidade)
 
         item = self.repositorio.adicionar_item_produto(id_venda, id_produto, produto.preco, quantidade)
         self.produto_repositorio.atualizar(id_produto, estoque=produto.estoque)
