@@ -6,10 +6,9 @@ from models.excecoes import CpfInvalidoError
 class Pessoa(ABC):
     def __init__(self, nome, cpf=None, cod=None):
         self._cod = cod
-        self.nome = nome  # passa pelo setter/validacao abaixo
-        self.cpf = cpf    # idem
+        self.nome = nome 
+        self.cpf = cpf 
 
-    # --- encapsulamento: cod e somente-leitura (gerado pelo banco) ----------
     @property
     def cod(self):
         return self._cod
@@ -18,7 +17,6 @@ class Pessoa(ABC):
     def cod(self, valor):
         self._cod = valor
 
-    # --- encapsulamento: nome nunca pode ficar vazio -------------------------
     @property
     def nome(self):
         return self._nome
@@ -29,8 +27,6 @@ class Pessoa(ABC):
             raise ValueError("Nome nao pode ser vazio.")
         self._nome = valor.strip()
 
-    # --- encapsulamento: CPF, quando informado, precisa ter exatamente ------
-    # --- 11 numeros (formatacao como pontos/traco e aceita e removida) ------
     @property
     def cpf(self):
         return self._cpf
