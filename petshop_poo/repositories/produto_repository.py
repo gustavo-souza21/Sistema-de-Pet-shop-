@@ -1,8 +1,3 @@
-"""
-repositories/produto_repository.py
-Acesso ao banco para a entidade Produto.
-"""
-
 import psycopg2
 
 from database.connection import get_connection, get_dict_cursor
