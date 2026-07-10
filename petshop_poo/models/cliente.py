@@ -1,9 +1,3 @@
-"""
-models/cliente.py
-Classe de dominio Cliente. Herda de Pessoa (heranca) e adiciona seus
-proprios atributos e validacoes (encapsulamento no email).
-"""
-
 from models.pessoa import Pessoa
 
 
