@@ -1,9 +1,3 @@
-"""
-repositories/funcionario_repository.py
-Acesso ao banco para Funcionario + gestao das especializacoes
-Veterinario e Tosador (tabelas independentes ligadas por FK=PK).
-"""
-
 import psycopg2
 
 from database.connection import get_connection, get_dict_cursor
