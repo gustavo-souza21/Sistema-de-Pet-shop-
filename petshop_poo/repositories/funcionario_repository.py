@@ -7,7 +7,6 @@ from repositories.base_repository import RepositorioBase
 
 
 class FuncionarioRepository(RepositorioBase):
-    # -- Funcionario (basico) -------------------------------------------------
     def criar(self, funcionario: Funcionario) -> Funcionario:
         sql = """
             INSERT INTO Funcionario (Nome, Cpf, Cargo)
@@ -116,8 +115,7 @@ class FuncionarioRepository(RepositorioBase):
             raise
         finally:
             conn.close()
-
-    # -- Veterinario (especializacao) -----------------------------------------
+            
     def tornar_veterinario(self, id_funcionario, crmv):
         sql = """
             INSERT INTO Veterinario (Id_funcionario, Crmv)
@@ -152,7 +150,6 @@ class FuncionarioRepository(RepositorioBase):
         finally:
             conn.close()
 
-    # -- Tosador (especializacao) ----------------------------------------------
     def tornar_tosador(self, id_funcionario, especialidade=None):
         sql = """
             INSERT INTO Tosador (Id_funcionario, Especialidade)
