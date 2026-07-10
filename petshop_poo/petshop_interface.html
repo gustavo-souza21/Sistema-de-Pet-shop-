@@ -43,7 +43,6 @@
     min-height: 100vh;
   }
 
-  /* ---------- Sidebar: folder-tab index ---------- */
   .sidebar{
     background: var(--ink);
     color: var(--tag-text);
@@ -115,7 +114,6 @@
   }
   .tab-btn.active .n{ color: var(--accent); }
 
-  /* ---------- Main content ---------- */
   main{ padding: 36px 44px; max-width: 1180px; }
 
   .section-head{
@@ -157,7 +155,6 @@
   }
   @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
 
-  /* ---------- Ficha (form card) ---------- */
   .ficha{
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -269,7 +266,6 @@
   .banner.ok{ display:block; background:#E9EEDD; color: var(--accent-alt); border:1px solid #CFDAB4; }
   .banner.err{ display:block; background: var(--danger-bg); color: var(--danger); border:1px solid #E7C3BB; }
 
-  /* ---------- Ledger (table) ---------- */
   .ledger-wrap{
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -354,7 +350,6 @@
 
   .muted-small{ font-size:12px; color:var(--ink-faint); }
 
-  /* Venda item list */
   .item-line{
     display:flex; justify-content:space-between; align-items:center;
     padding:8px 0; border-bottom:1px dashed var(--border); font-size:13.5px;
@@ -390,17 +385,10 @@
   </nav>
 
   <main id="mainArea">
-    <!-- rendered by JS -->
   </main>
 </div>
 
 <script>
-/* =========================================================================
-   MODELS
-   Espelha models/ do projeto Python: classes com encapsulamento (getters
-   simulados por validação central), herança (Pessoa -> Cliente/Funcionario)
-   e polimorfismo (descricaoPapel / subtotal).
-   ========================================================================= */
 
 const StatusAgendamento = ["Agendado", "Concluido", "Cancelado"];
 
@@ -418,7 +406,7 @@ function validarCpf(valor) {
 class Pessoa {
   constructor(nome, cpf) {
     this.nome = nome;
-    this.cpf = cpf; // já deve vir validado/limpo por validarCpf()
+    this.cpf = cpf;
   }
   descricaoPapel() { throw new Error("Classe abstrata: implemente descricaoPapel()"); }
 }
@@ -467,7 +455,6 @@ class Produto {
   }
 }
 
-/* Itens de venda: polimorfismo — ambos implementam subtotal()/descricao() */
 class ItemServico {
   constructor({ tipoServico, quantidade, valorUnitario }) {
     this.tipoServico = tipoServico;
@@ -486,13 +473,6 @@ class ItemProduto {
   subtotal() { return this.quantidade * this.valorUnitario; }
   descricao() { return `Produto: ${this.nomeProduto}`; }
 }
-
-/* =========================================================================
-   REPOSITORIES
-   Espelha repositories/: acesso aos "dados" (aqui, window.storage no
-   lugar do PostgreSQL, já que uma página HTML isolada não abre conexão
-   direta com um banco). Cada função aqui é o equivalente do SQL de lá.
-   ========================================================================= */
 
 const Repo = {
   async _load(chave) {
@@ -539,11 +519,6 @@ const Repo = {
     return dados.itens.find(i => i.id === id) || null;
   }
 };
-
-/* =========================================================================
-   SERVICES
-   Espelha services/: regras de negócio que usam os repositories acima.
-   ========================================================================= */
 
 const Services = {
   async cadastrarCliente({ nome, cpf, endereco, email, fone }) {
@@ -603,7 +578,7 @@ const Services = {
     const produtoData = produtos.itens.find(p => p.id === idProduto);
     if (!produtoData) throw new Error("Produto não encontrado.");
     const produto = new Produto(produtoData);
-    produto.baixarEstoque(quantidade); // regra de negócio no objeto
+    produto.baixarEstoque(quantidade);
 
     produtoData.estoque = produto.estoque;
     await Repo._save("produtos", produtos);
@@ -628,11 +603,6 @@ const Services = {
   }
 };
 
-/* =========================================================================
-   UI
-   Espelha ui/: renderização das telas (o equivalente do menu de terminal,
-   aqui como abas HTML) e ligação dos formulários com os Services acima.
-   ========================================================================= */
 
 const mainArea = document.getElementById("mainArea");
 let currentTab = "clientes";
@@ -667,7 +637,6 @@ async function render() {
   await renderers[currentTab]();
 }
 
-/* ---------------- CLIENTES ---------------- */
 async function renderClientes() {
   const clientes = await Repo.listar("clientes");
 
@@ -739,7 +708,6 @@ async function renderClientes() {
     </div>
   `;
 
-  // validação de CPF em tempo real
   const cpfInput = document.getElementById("c-cpf");
   const cpfErro = document.getElementById("c-cpf-erro");
   cpfInput.addEventListener("input", () => {
@@ -800,7 +768,6 @@ async function renderClientes() {
   });
 }
 
-/* ---------------- ANIMAIS ---------------- */
 async function renderAnimais() {
   const [animais, clientes] = [await Repo.listar("animais"), await Repo.listar("clientes")];
   const nomeCliente = (id) => (clientes.find(c => c.id === id) || {}).nome || "—";
@@ -890,7 +857,6 @@ async function renderAnimais() {
   });
 }
 
-/* ---------------- SERVIÇOS ---------------- */
 async function renderServicos() {
   const servicos = await Repo.listar("servicos");
   mainArea.innerHTML = `
@@ -948,7 +914,6 @@ async function renderServicos() {
   });
 }
 
-/* ---------------- FUNCIONÁRIOS ---------------- */
 async function renderFuncionarios() {
   const funcionarios = await Repo.listar("funcionarios");
   mainArea.innerHTML = `
@@ -1050,7 +1015,6 @@ async function renderFuncionarios() {
   });
 }
 
-/* ---------------- AGENDAMENTOS ---------------- */
 async function renderAgendamentos() {
   const [agendamentos, animais, funcionarios, servicos] = [
     await Repo.listar("agendamentos"), await Repo.listar("animais"),
@@ -1150,7 +1114,6 @@ async function renderAgendamentos() {
   });
 }
 
-/* ---------------- PRODUTOS ---------------- */
 async function renderProdutos() {
   const produtos = await Repo.listar("produtos");
   mainArea.innerHTML = `
