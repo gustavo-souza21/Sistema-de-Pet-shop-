@@ -1,15 +1,3 @@
--- =============================================================================
--- schema.sql
--- Script de criacao do banco de dados do Sistema de Pet Shop.
--- Execute uma unica vez em um banco PostgreSQL vazio (ex: petshop).
--- =============================================================================
-
--- -----------------------------------------------------------------------------
--- CLIENTE
--- -----------------------------------------------------------------------------
--- Cpf tem tamanho fixo de 11 caracteres (somente digitos, sem pontuacao) --
--- e e UNIQUE: o banco tambem impede duas pessoas com o mesmo CPF, alem da --
--- validacao ja feita em codigo pela classe Pessoa. --
 CREATE TABLE Cliente (
     Cod_cliente SERIAL PRIMARY KEY,
     Nome        VARCHAR(120) NOT NULL,
