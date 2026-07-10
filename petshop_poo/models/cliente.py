@@ -8,7 +8,6 @@ class Cliente(Pessoa):
         self.email = email
         self.fone = fone
 
-    # --- encapsulamento: valida formato minimo do email ----------------------
     @property
     def email(self):
         return self._email
@@ -22,7 +21,6 @@ class Cliente(Pessoa):
     def descricao_papel(self):
         return "Cliente"
 
-    # --- conversao de/para o formato usado pelo repository -------------------
     def to_dict(self):
         return {
             "nome": self.nome,
