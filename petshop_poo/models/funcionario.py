@@ -1,17 +1,3 @@
-"""
-models/funcionario.py
-Classe de dominio Funcionario. Tambem herda de Pessoa, mas implementa
-'descricao_papel' de forma bem diferente de Cliente -- e exatamente
-esse contraste que caracteriza o polimorfismo: o mesmo metodo
-(descricao_papel / __str__, herdado de Pessoa) se comporta de forma
-diferente dependendo da classe concreta.
-
-Um funcionario pode acumular as especializacoes de Veterinario e/ou
-Tosador (tabelas independentes no banco, sem exclusividade mutua).
-Aqui isso e representado por dois atributos opcionais (crmv,
-especialidade) que ficam None quando a especializacao nao se aplica.
-"""
-
 from models.pessoa import Pessoa
 
 
