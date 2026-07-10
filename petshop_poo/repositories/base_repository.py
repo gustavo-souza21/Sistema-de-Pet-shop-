@@ -1,13 +1,3 @@
-"""
-repositories/base_repository.py
-Contrato comum de persistencia. Cada repository concreto (Cliente,
-Animal, Servico...) herda desta classe abstrata e implementa os cinco
-metodos com o SQL especifico da sua tabela. Isso permite, por exemplo,
-escrever uma funcao generica que recebe "qualquer RepositorioBase" e
-chama .listar() sem precisar saber qual entidade esta por tras --
-outro exemplo de polimorfismo no projeto.
-"""
-
 from abc import ABC, abstractmethod
 
 
