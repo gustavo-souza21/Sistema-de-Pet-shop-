@@ -15,21 +15,12 @@ CREATE TABLE Animal (
     Id_cliente      INTEGER NOT NULL REFERENCES Cliente (Cod_cliente) ON DELETE RESTRICT
 );
 
--- -----------------------------------------------------------------------------
--- SERVICO
--- Um servico ja usado em algum agendamento nunca pode mais ser apagado
--- (RESTRICT via Agendamento.Id_servico), so atualizado.
--- -----------------------------------------------------------------------------
 CREATE TABLE Servico (
     Id_servico    SERIAL PRIMARY KEY,
     Tipo_servico  VARCHAR(80) NOT NULL,
     Valor         NUMERIC(10, 2) NOT NULL CHECK (Valor >= 0)
 );
 
--- -----------------------------------------------------------------------------
--- FUNCIONARIO (base) + especializacoes independentes Veterinario / Tosador.
--- Um funcionario pode ser nenhum, um ou os dois -- nao ha exclusividade mutua.
--- -----------------------------------------------------------------------------
 CREATE TABLE Funcionario (
     Id_funcionario SERIAL PRIMARY KEY,
     Nome           VARCHAR(120) NOT NULL,
@@ -47,11 +38,6 @@ CREATE TABLE Tosador (
     Especialidade  VARCHAR(80)
 );
 
--- -----------------------------------------------------------------------------
--- AGENDAMENTO
--- Tres FKs obrigatorias. O banco nao restringe os valores de Status
--- (isso e validado em codigo, na classe Agendamento).
--- -----------------------------------------------------------------------------
 CREATE TABLE Agendamento (
     Id_agendamento SERIAL PRIMARY KEY,
     Data           DATE NOT NULL,
@@ -62,10 +48,6 @@ CREATE TABLE Agendamento (
     Id_servico     INTEGER NOT NULL REFERENCES Servico (Id_servico) ON DELETE RESTRICT
 );
 
--- -----------------------------------------------------------------------------
--- PRODUTO
--- CHECK (Estoque >= 0) e a rede de seguranca do banco contra estoque negativo.
--- -----------------------------------------------------------------------------
 CREATE TABLE Produto (
     Id_produto SERIAL PRIMARY KEY,
     Nome       VARCHAR(120) NOT NULL,
@@ -73,12 +55,6 @@ CREATE TABLE Produto (
     Estoque    INTEGER NOT NULL DEFAULT 0 CHECK (Estoque >= 0)
 );
 
--- -----------------------------------------------------------------------------
--- VENDA
--- Valor comeca em 0 e e recalculado automaticamente pela trigger definida
--- mais abaixo, toda vez que um item (servico ou produto) e alterado.
--- Id_agendamento usa SET NULL: apagar o agendamento nao apaga a venda.
--- -----------------------------------------------------------------------------
 CREATE TABLE Venda (
     Id_venda       SERIAL PRIMARY KEY,
     Data           TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -87,10 +63,6 @@ CREATE TABLE Venda (
     Id_agendamento INTEGER REFERENCES Agendamento (Id_agendamento) ON DELETE SET NULL
 );
 
--- -----------------------------------------------------------------------------
--- ITEM_VENDA (baixa de servico realizado via agendamento)
--- Um agendamento so pode ser faturado uma unica vez em todo o banco.
--- -----------------------------------------------------------------------------
 CREATE TABLE Item_venda (
     Id_item_venda   SERIAL PRIMARY KEY,
     Id_venda        INTEGER NOT NULL REFERENCES Venda (Id_venda) ON DELETE CASCADE,
@@ -100,11 +72,6 @@ CREATE TABLE Item_venda (
     CONSTRAINT uq_itemvenda_agendamento UNIQUE (Id_agendamento)
 );
 
--- -----------------------------------------------------------------------------
--- INTEM_PRODUTO (produto vendido)
--- Mantido o nome original "Intem_Produto" por compatibilidade com o codigo
--- ja existente do projeto.
--- -----------------------------------------------------------------------------
 CREATE TABLE Intem_Produto (
     Id_item_produto SERIAL PRIMARY KEY,
     Id_venda        INTEGER NOT NULL REFERENCES Venda (Id_venda) ON DELETE CASCADE,
@@ -113,10 +80,6 @@ CREATE TABLE Intem_Produto (
     Valor_unitario  NUMERIC(10, 2) NOT NULL CHECK (Valor_unitario >= 0)
 );
 
--- -----------------------------------------------------------------------------
--- TRIGGER: recalcula Venda.Valor automaticamente sempre que um item de
--- servico ou de produto e inserido, atualizado ou deletado.
--- -----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION fn_recalcula_valor_venda()
 RETURNS TRIGGER AS $$
 DECLARE
