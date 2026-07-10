@@ -1,13 +1,3 @@
-"""
-models/excecoes.py
-Excecoes de dominio do sistema. Em vez de deixar o restante do codigo
-capturar Exception generica ou erros crus do psycopg2 (ex:
-ForeignKeyViolation), as camadas de repository/service traduzem esses
-erros para excecoes especificas daqui -- assim quem usa o sistema (a UI)
-so precisa conhecer estas classes.
-"""
-
-
 class RegistroNaoEncontradoError(Exception):
     """Base para 'buscar/atualizar algo que nao existe'."""
 
