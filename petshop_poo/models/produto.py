@@ -1,12 +1,3 @@
-"""
-models/produto.py
-Classe de dominio Produto. O metodo baixar_estoque() e a regra de
-negocio "orientada a objetos" pedida pelo trabalho: o proprio objeto
-sabe validar e aplicar a baixa de estoque, sem deixar o estoque ficar
-negativo -- o banco tem um CHECK equivalente, mas aqui a regra ja e
-recusada em memoria, antes de qualquer SQL ser executado.
-"""
-
 from models.excecoes import EstoqueInsuficienteError
 
 
