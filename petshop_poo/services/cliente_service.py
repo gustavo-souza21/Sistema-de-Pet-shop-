@@ -1,11 +1,3 @@
-"""
-services/cliente_service.py
-Regras de negocio da entidade Cliente. A regra pedida pelo edital
-("nao permitir cadastro repetido por e-mail") vive aqui, e nao no
-repository nem no model -- o service e a camada que orquestra
-repository + regras.
-"""
-
 from models.cliente import Cliente
 from models.excecoes import ClienteNaoEncontradoError, EmailDuplicadoError
 from repositories.cliente_repository import ClienteRepository
@@ -24,8 +16,6 @@ class ClienteService:
             if ja_existe:
                 raise EmailDuplicadoError(email)
 
-        # cliente.cpf ja valida o formato (11 numeros) via encapsulamento em Pessoa;
-        # a unicidade do CPF (nao repetir entre clientes) e garantida pelo banco.
         cliente = Cliente(nome=nome, cpf=cpf, endereco=endereco, email=email, fone=fone)
         return self.repositorio.criar(cliente)
 
@@ -48,7 +38,6 @@ class ClienteService:
                 raise EmailDuplicadoError(email)
 
         if cpf is not None:
-            # reaproveita a validacao de formato (11 numeros) da classe Cliente/Pessoa
             cpf = Cliente(nome="validacao_temporaria", cpf=cpf).cpf
 
         atualizado = self.repositorio.atualizar(
