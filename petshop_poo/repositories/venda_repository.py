@@ -1,14 +1,3 @@
-"""
-repositories/venda_repository.py
-Acesso ao banco para Venda, Item_venda (servicos baixados) e
-Intem_Produto (produtos vendidos).
-
-PONTO CRITICO DE DESIGN: Venda.Valor e calculado automaticamente por uma
-trigger no PostgreSQL (fn_recalcula_valor_venda), toda vez que uma linha
-e inserida/atualizada/deletada em Item_venda ou Intem_Produto. As funcoes
-abaixo NUNCA escrevem em Venda.Valor diretamente.
-"""
-
 import psycopg2
 
 from database.connection import get_connection, get_dict_cursor
