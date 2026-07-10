@@ -1,8 +1,3 @@
-"""
-services/animal_service.py
-Regras de negocio da entidade Animal.
-"""
-
 from models.animal import Animal
 from models.excecoes import AnimalNaoEncontradoError, ClienteNaoEncontradoError
 from repositories.animal_repository import AnimalRepository
