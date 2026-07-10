@@ -1,10 +1,3 @@
-"""
-repositories/agendamento_repository.py
-Acesso ao banco para a entidade Agendamento. Tres FKs obrigatorias
-(Cod_animal, Id_funcionario, Id_servico) -- qualquer uma inexistente
-estoura ForeignKeyViolation na criacao ou atualizacao.
-"""
-
 import psycopg2
 
 from database.connection import get_connection, get_dict_cursor
