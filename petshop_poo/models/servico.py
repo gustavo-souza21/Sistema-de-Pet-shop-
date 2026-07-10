@@ -1,9 +1,3 @@
-"""
-models/servico.py
-Classe de dominio Servico (ex: banho, tosa, consulta veterinaria).
-"""
-
-
 class Servico:
     def __init__(self, tipo_servico, valor, cod=None):
         self.tipo_servico = tipo_servico
