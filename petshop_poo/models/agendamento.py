@@ -14,12 +14,10 @@ class Agendamento:
         self.id_servico = id_servico
         self.status = status
         self.cod = cod
-        # campos so preenchidos quando o repository faz JOIN (listagem)
         self.nome_animal = nome_animal
         self.nome_funcionario = nome_funcionario
         self.tipo_servico = tipo_servico
 
-    # --- encapsulamento + regra de negocio orientada a objetos ---------------
     @property
     def status(self):
         return self._status
