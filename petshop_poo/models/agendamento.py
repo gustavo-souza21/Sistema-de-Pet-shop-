@@ -1,11 +1,3 @@
-"""
-models/agendamento.py
-Classe de dominio Agendamento. O banco NAO restringe os valores
-possiveis de Status (nao ha CHECK no SQL) -- por isso essa validacao
-vira uma regra de negocio orientada a objetos aqui: o setter de
-'status' so aceita um dos valores de STATUS_PERMITIDOS.
-"""
-
 from models.excecoes import StatusInvalidoError
 
 STATUS_PERMITIDOS = ("Agendado", "Concluido", "Cancelado")
