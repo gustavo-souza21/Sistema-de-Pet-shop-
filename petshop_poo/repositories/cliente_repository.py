@@ -1,11 +1,3 @@
-"""
-repositories/cliente_repository.py
-Acesso ao banco para a entidade Cliente. Cada metodo abre sua propria
-conexao e fecha no final -- pratica ja usada no projeto original, mantida
-aqui por ser importante para uso futuro em API web (cada requisicao
-deve ter sua propria conexao de vida curta, nunca uma global compartilhada).
-"""
-
 import psycopg2
 
 from database.connection import get_connection, get_dict_cursor
